@@ -8,25 +8,12 @@ def claw_machine(As, Bs, prizes) -> int:
     b_cost = 1
     result = 0
     for (ax, ay), (bx, by), (px, py) in zip(As, Bs, prizes):
-        tokens = []
-        # first solution
         offset = py - px * ay / ax
         x = offset / (by / bx - ay / ax)
-        if abs(x - round(x)) < 1e-3:
-            num_b = int(round(x)) // bx
-            num_a = (px - num_b * bx) // ax
-            if num_a*ax + num_b*bx == px and num_a*ay + num_b*by == py:
-                tokens.append(a_cost * num_a + b_cost * num_b)
-        # second solution
-        offset = py - px * by / bx
-        x = offset / (ay / ax - by / bx)
-        if abs(x - round(x)) < 1e-3:
-            num_a = int(round(x)) // ax
-            num_b = (px - num_a * ax) // bx
-            if num_a*ax + num_b*bx == px and num_a*ay + num_b*by == py:
-                tokens.append(a_cost * num_a + b_cost * num_b)
-        if tokens:
-            result += min(tokens)
+        num_b = int(round(x)) // bx
+        num_a = (px - num_b * bx) // ax
+        if num_a*ax + num_b*bx == px and num_a*ay + num_b*by == py:
+            result += a_cost * num_a + b_cost * num_b
 
     return result
 
