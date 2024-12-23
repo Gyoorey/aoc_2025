@@ -21,9 +21,14 @@ def part1(bytes: List[Tuple[int, int]], max_range = 71) -> int:
     return memory[max_range-1, max_range-1]
 
 def part2(bytes: List[Tuple[int, int]]) -> int:
-    for i in range(1024, len(bytes)):
-        if part1(bytes[:i]) == 0:
-            return bytes[i-1]
+    left, right = 1024, len(bytes)
+    while left < right:
+        mid = (left + right) // 2
+        if part1(bytes[:mid]) == 0:
+            right = mid
+        else:
+            left = mid + 1
+    return bytes[left - 1]
 
 def solve(input):
     with open(input) as file:
