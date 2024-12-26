@@ -12,19 +12,19 @@ def part1(messages: List[str], patterns: List[str]) -> int:
 memory_map = {}
 
 def decompose(message: str, trie: Trie, path: str, original: str) -> int:
+    if message in memory_map:
+        return memory_map[message]
+
     prefix_indices = trie.startsWithAll(message)
     num_of_decomp = 0
     for prefix_index in prefix_indices:
         path_temp = path + message[:prefix_index]
         if path_temp == original:
             num_of_decomp += 1
-            continue
-        if message[prefix_index:] in memory_map:
-            num_of_decomp += memory_map[message[prefix_index:]]
-            continue
-        ret = decompose(message[prefix_index:], trie, path_temp, original)
-        num_of_decomp += ret
-        memory_map[message[prefix_index:]] = ret
+        else:
+            num_of_decomp += decompose(message[prefix_index:], trie, path_temp, original)
+
+    memory_map[message] = num_of_decomp
     return num_of_decomp
 
 def part2(messages: List[str], patterns: List[str]) -> int:      
@@ -32,10 +32,7 @@ def part2(messages: List[str], patterns: List[str]) -> int:
     trie = Trie()
     for pattern in patterns:
         trie.insert(pattern)
-    num_of_decomp = 0
-    for message in messages:
-        ret = decompose(message, trie, '', message)
-        num_of_decomp += ret
+    num_of_decomp = sum(decompose(message, trie, '', message) for message in messages)
 
     return num_of_decomp
 
